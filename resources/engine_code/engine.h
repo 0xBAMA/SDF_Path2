@@ -3,6 +3,10 @@
 
 #include "includes.h"
 
+enum class renderMode {
+  none, preview, pathtrace
+};
+
 class engine {
 public:
 	engine()  { init(); }
@@ -39,6 +43,7 @@ private:
   void imguiPass();
   void imguiFrameStart();
   void imguiFrameEnd();
+  void controlsWindow();
   void drawTextEditor();
   void quitConf( bool *open );
 
@@ -51,6 +56,8 @@ private:
 	bool quitConfirm = false;
 	bool pQuit = false;
 
+  // render mode
+  renderMode mode = renderMode::preview;
 };
 
 #endif

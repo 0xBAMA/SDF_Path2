@@ -47,7 +47,7 @@ void engine::drawTextEditor() {
   editor.SetPalette( TextEditor::GetDarkPalette() );
   // editor.SetPalette(TextEditor::GetRetroBluePalette());
 
-  static const char *fileToEdit = "resources/engine_code/shaders/blit.vs.glsl";
+  static const char *fileToEdit = "resources/engine_code/shaders/pathtrace.cs.glsl";
   std::ifstream t( fileToEdit );
   static bool loaded = false;
   if ( !loaded ) {
@@ -68,6 +68,26 @@ void engine::drawTextEditor() {
   editor.Render( "Editor" );
   ImGui::End();
 }
+
+
+
+
+// controls window
+void engine::controlsWindow() {
+  ImGui::Begin( "Controls", NULL, 0 );
+
+  // controls
+
+  ImGui::End();
+}
+
+
+
+
+
+
+
+
 
 void engine::imguiFrameStart() {
   // Start the Dear ImGui frame

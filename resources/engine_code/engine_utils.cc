@@ -1,9 +1,21 @@
 #include "engine.h"
 
 bool engine::mainLoop() {
+  // different rendering
+  switch( mode ) {
+    case renderMode::preview:
+      // raymarch();    // run the basic raymarcher
+      break;
 
-  // compute passes here
-    // invoke any shaders you want to use to do work on the GPU
+    case renderMode::pathtrace:
+      // pathtrace();   // accumulate pathtrace samples
+      break;
+
+    default:
+
+      break;
+  }
+
 
   // fullscreen triangle copying the image
   mainDisplay();
@@ -23,8 +35,8 @@ bool engine::mainLoop() {
 
 void engine::mainDisplay() {
   // clear the screen
-  glClearColor( clearColor.x, clearColor.y, clearColor.z, clearColor.w ); // from hsv picker
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor( clearColor.x, clearColor.y, clearColor.z, clearColor.w );
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   // texture display
   glUseProgram( displayShader );
@@ -32,7 +44,7 @@ void engine::mainDisplay() {
   glBindBuffer( GL_ARRAY_BUFFER, displayVBO );
 
   ImGuiIO &io = ImGui::GetIO();
-  glUniform2f( glGetUniformLocation( displayShader, "resolution"), io.DisplaySize.x, io.DisplaySize.y );
+  glUniform2f( glGetUniformLocation( displayShader, "resolution" ), io.DisplaySize.x, io.DisplaySize.y );
   glDrawArrays( GL_TRIANGLES, 0, 3 );
 }
 
@@ -65,7 +77,7 @@ void engine::handleEvents() {
     if ( event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID( window ) )
       pQuit = true;
 
-    if ( ( event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE) || ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_X1 ))
+    if ( ( event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE) || ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_X1 ) )
       quitConfirm = !quitConfirm; // x1 is browser back on the mouse
 
     if ( event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && SDL_GetModState() & KMOD_SHIFT )

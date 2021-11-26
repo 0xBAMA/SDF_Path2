@@ -9,6 +9,7 @@ void engine::startMessage() {
 
 void engine::createWindowAndContext() {
   cout << T_BLUE << "    Initializing SDL2" << RESET << " ................................ ";
+
   if ( SDL_Init( SDL_INIT_EVERYTHING ) != 0 )
     cout << "Error: " << SDL_GetError() << endl;
 
@@ -144,12 +145,6 @@ void engine::displaySetup() {
   glBindImageTexture( 0, displayTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8UI );
 }
 
-void engine::computeShaderCompile() {
-
-  // compile any compute shaders here, store handles in engine class member function variables
-
-}
-
 
 void engine::imguiSetup() {
   cout << T_BLUE << "    Configuring dearImGUI" << RESET << " ............................ ";
@@ -174,7 +169,6 @@ void engine::imguiSetup() {
   glClearColor( clearColor.x, clearColor.y, clearColor.z, clearColor.w );
   glClear( GL_COLOR_BUFFER_BIT );
   SDL_GL_SwapWindow( window ); // show clear color
-
 
   // setting custom font, if desired
   // io.Fonts->AddFontFromFileTTF("resources/fonts/star_trek/titles/TNG_Title.ttf", 16);
@@ -232,4 +226,11 @@ void engine::imguiSetup() {
   colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 
   cout << T_GREEN << "done." << RESET << endl << endl;
+}
+
+
+void engine::computeShaderCompile() {
+
+  // compile any compute shaders here, store handles in engine class member function variables
+
 }
