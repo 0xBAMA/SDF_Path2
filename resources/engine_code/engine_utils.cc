@@ -1,39 +1,35 @@
 #include "engine.h"
 
 bool engine::mainLoop() {
-  // different rendering
+  // different rendering modes - preview until pathtrace is triggered
   switch( mode ) {
-    case renderMode::preview:
-      // raymarch();    // run the basic raymarcher
-      break;
-
-    case renderMode::pathtrace:
-      // pathtrace();   // accumulate pathtrace samples
-      break;
-
-    default:
-
-      break;
+    case renderMode::preview:   raymarch();  break;
+    case renderMode::pathtrace: pathtrace(); break;
+    default: break;
   }
 
+  postprocess();               // accumulatorTexture -> displayTexture
+  mainDisplayBlit();           // fullscreen triangle copying the image
+  imguiPass();                 // do all the gui stuff
+  SDL_GL_SwapWindow( window ); // swap the double buffers to present
+  handleEvents();              // handle all events
 
-  // fullscreen triangle copying the image
-  mainDisplay();
-
-  // do all the gui stuff
-  imguiPass();
-
-  // swap the double buffers to present
-  SDL_GL_SwapWindow( window );
-
-  // handle all events
-  handleEvents();
-
-  // break main loop when pQuit turns true
-  return pQuit;
+  return pQuit;                // break main loop when pQuit turns true
 }
 
-void engine::mainDisplay() {
+void engine::raymarch() {
+
+}
+
+void engine::pathtrace() {
+
+}
+
+void engine::postprocess() {
+
+}
+
+void engine::mainDisplayBlit() {
   // clear the screen
   glClearColor( clearColor.x, clearColor.y, clearColor.z, clearColor.w );
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

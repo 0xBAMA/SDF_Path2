@@ -22,12 +22,16 @@ private:
   int totalScreenWidth, totalScreenHeight;
 	ImVec4 clearColor;
 
-  // OpenGL data
+  // OpenGL data handles
+    // render
+  GLuint accumulatorTexture;
+  GLuint raymarchShader;
+  GLuint pathtraceShader;
+    // present
   GLuint displayTexture;
   GLuint displayShader;
 	GLuint displayVAO;
 	GLuint displayVBO;
-  // objLoader o; // wrapper for TinyOBJLoader
 
   // initialization
   void init();
@@ -38,7 +42,7 @@ private:
   void imguiSetup();
 
   // main loop functions
-  void mainDisplay();
+  void mainDisplayBlit();
   void handleEvents();
   void imguiPass();
   void imguiFrameStart();
@@ -46,6 +50,11 @@ private:
   void controlsWindow();
   void drawTextEditor();
   void quitConf( bool *open );
+
+  // rendering functions
+  void raymarch();    // preview render
+  void pathtrace();   // accumulate samples
+  void postprocess(); // tonemap, dither
 
   // shutdown procedures
   void imguiQuit();
