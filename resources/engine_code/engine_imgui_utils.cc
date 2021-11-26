@@ -7,9 +7,9 @@ void engine::quitConf( bool *open ) {
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration;
     // create centered window
     ImGui::SetNextWindowPos( ImVec2( dm.w / 2 - 120, dm.h / 2 - 25 ) );
-    ImGui::SetNextWindowSize( ImVec2( 230, 55 ) );
+    ImGui::SetNextWindowSize( ImVec2( 225, 35 ) );
     ImGui::Begin( "quit", open, flags );
-    ImGui::Text( "Are you sure you want to quit?" );
+    ImGui::Text( " Are you sure you want to quit?" );
     ImGui::Text( "  " );
     ImGui::SameLine();
     // button to cancel -> set this window's bool to false

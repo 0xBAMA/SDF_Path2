@@ -1,13 +1,7 @@
 #include "engine.h"
 
 bool engine::mainLoop() {
-  // different rendering modes - preview until pathtrace is triggered
-  switch( mode ) {
-    case renderMode::preview:   raymarch();  break;
-    case renderMode::pathtrace: pathtrace(); break;
-    default: break;
-  }
-
+  render();                    // render with the current mode
   postprocess();               // accumulatorTexture -> displayTexture
   mainDisplayBlit();           // fullscreen triangle copying the image
   imguiPass();                 // do all the GUI stuff
@@ -17,16 +11,29 @@ bool engine::mainLoop() {
   return !pQuit;               // break loop in main.cc when pQuit turns true
 }
 
-void engine::raymarch() {
 
+void engine::render() {
+  // different rendering modes - preview until pathtrace is triggered
+  switch( mode ) {
+    case renderMode::preview:   raymarch();  break;
+    case renderMode::pathtrace: pathtrace(); break;
+    default: break;
+  }
+}
+
+void engine::raymarch() {
+  // glUseProgram( raymarchShader );
+  // fullscreen pass
 }
 
 void engine::pathtrace() {
-
+  // glUseProgram( pathtraceShader );
+  // tiles, until the frame time limit has passed
 }
 
 void engine::postprocess() {
-
+  // glUseProgram( postprocessShader );
+  // tonemapping and dithering, as configured in the GUI
 }
 
 void engine::mainDisplayBlit() {
@@ -79,4 +86,8 @@ void engine::handleEvents() {
     if ( event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && SDL_GetModState() & KMOD_SHIFT )
       pQuit = true; // force quit on shift+esc ( bypasses confirm window )
   }
+}
+
+void engine::screenShot() {
+
 }

@@ -12,7 +12,7 @@ public:
 	engine()  { init(); }
 	~engine() { quit(); }
 
-  // called from main
+  // called from main()
   bool mainLoop();
 
 private:
@@ -24,6 +24,7 @@ private:
   // program control flags
   bool quitConfirm = false;
   bool pQuit       = false;
+  bool filter      = false;
   renderMode mode  = renderMode::preview;
 
   // initialization
@@ -42,7 +43,14 @@ private:
   void imguiFrameEnd();
   void controlsWindow();
   void drawTextEditor();
+  void screenShot();
   void quitConf( bool *open );
+
+  // rendering functions
+  void render();      // wrapper
+  void raymarch();    // preview render
+  void pathtrace();   // accumulate samples
+  void postprocess(); // tonemap, dither
 
   // shutdown procedure
   void imguiQuit();
@@ -60,11 +68,6 @@ private:
   GLuint displayShader;
 	GLuint displayVAO;
 	GLuint displayVBO;
-
-  // rendering functions
-  void raymarch();    // preview render
-  void pathtrace();   // accumulate samples
-  void postprocess(); // tonemap, dither
 };
 
 #endif
