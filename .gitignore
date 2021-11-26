@@ -1,4 +1,5 @@
 *.o
 build
+NoiseTool
 exe
 imgui.ini
