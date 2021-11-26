@@ -25,8 +25,6 @@ void engine::createWindowAndContext() {
   // query the screen resolution
   SDL_DisplayMode dm;
   SDL_GetDesktopDisplayMode( 0, &dm );
-  totalScreenWidth = dm.w;
-  totalScreenHeight = dm.h;
 
   cout << T_GREEN << "done." << RESET << endl;
 

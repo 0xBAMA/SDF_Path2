@@ -19,19 +19,12 @@ private:
   // application handles + basic data
 	SDL_Window * window;
 	SDL_GLContext GLcontext;
-  int totalScreenWidth, totalScreenHeight;
 	ImVec4 clearColor;
 
-  // OpenGL data handles
-    // render
-  GLuint accumulatorTexture;
-  GLuint raymarchShader;
-  GLuint pathtraceShader;
-    // present
-  GLuint displayTexture;
-  GLuint displayShader;
-	GLuint displayVAO;
-	GLuint displayVBO;
+  // program control flags
+  bool quitConfirm = false;
+  bool pQuit       = false;
+  renderMode mode  = renderMode::preview;
 
   // initialization
   void init();
@@ -51,22 +44,27 @@ private:
   void drawTextEditor();
   void quitConf( bool *open );
 
-  // rendering functions
-  void raymarch();    // preview render
-  void pathtrace();   // accumulate samples
-  void postprocess(); // tonemap, dither
-
-  // shutdown procedures
+  // shutdown procedure
   void imguiQuit();
   void SDLQuit();
 	void quit();
 
-  // program flags
-	bool quitConfirm = false;
-	bool pQuit = false;
+  // OpenGL data handles
+    // render
+  GLuint accumulatorTexture;
+  GLuint raymarchShader;
+  GLuint pathtraceShader;
+  GLuint postprocessShader;
+    // present
+  GLuint displayTexture;
+  GLuint displayShader;
+	GLuint displayVAO;
+	GLuint displayVBO;
 
-  // render mode
-  renderMode mode = renderMode::preview;
+  // rendering functions
+  void raymarch();    // preview render
+  void pathtrace();   // accumulate samples
+  void postprocess(); // tonemap, dither
 };
 
 #endif

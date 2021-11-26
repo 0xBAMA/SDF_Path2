@@ -10,11 +10,11 @@ bool engine::mainLoop() {
 
   postprocess();               // accumulatorTexture -> displayTexture
   mainDisplayBlit();           // fullscreen triangle copying the image
-  imguiPass();                 // do all the gui stuff
+  imguiPass();                 // do all the GUI stuff
   SDL_GL_SwapWindow( window ); // swap the double buffers to present
-  handleEvents();              // handle all events
+  handleEvents();              // handle input events
 
-  return pQuit;                // break main loop when pQuit turns true
+  return !pQuit;               // break loop in main.cc when pQuit turns true
 }
 
 void engine::raymarch() {

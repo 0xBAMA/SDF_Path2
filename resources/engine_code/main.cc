@@ -3,7 +3,7 @@
 int main( int argc, char *argv[] ) {
   engine e;
 
-  while( !e.mainLoop() );
+  while( e.mainLoop() );
 
   return 0;
 }

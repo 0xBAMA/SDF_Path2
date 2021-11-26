@@ -2,9 +2,11 @@
 
 void engine::quitConf( bool *open ) {
   if ( *open ) {
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode( 0, &dm );
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration;
     // create centered window
-    ImGui::SetNextWindowPos( ImVec2( totalScreenWidth / 2 - 120, totalScreenHeight / 2 - 25 ) );
+    ImGui::SetNextWindowPos( ImVec2( dm.w / 2 - 120, dm.h / 2 - 25 ) );
     ImGui::SetNextWindowSize( ImVec2( 230, 55 ) );
     ImGui::Begin( "quit", open, flags );
     ImGui::Text( "Are you sure you want to quit?" );
