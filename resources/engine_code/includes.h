@@ -80,8 +80,11 @@ constexpr int MSAACount = 1;
 #include "../nlohmann_JSON/json.hpp"
 using json = nlohmann::json;
 
-#define WIDTH 640
-#define HEIGHT 480
+// #define WIDTH 640
+// #define HEIGHT 480
+
+#define WIDTH  1920/4
+#define HEIGHT 1080/4
 
 // not sure about this, going to need to do some testing, to maximize amount of work per timer query
 #define TILESIZE 128

@@ -40,20 +40,20 @@ void engine::pathtrace() {
     glGetQueryObjectiv( queryID[ 0 ], GL_QUERY_RESULT_AVAILABLE, &startTimeAvailable );
   glGetQueryObjectui64v( queryID[ 0 ], GL_QUERY_RESULT, &startTime );
 
-  int iterations = 0;
+  int tilesCompleted = 0;
   float looptime = 0.;
-
   while( 1 ){
-    iterations++;
+    tilesCompleted++;
 
-    // get a tile offset
+    // get a tile offset + send it
     glm::ivec2 tile = getTile();
+    glUniform2i( glGetUniformLocation( pathtraceShader, "tileOffset" ), tile.x, tile.y);
 
     // render the specified tile - send uniforms and dispatch
-    glDispatchCompute(TILESIZE / 32, TILESIZE / 32, 1);
+    glDispatchCompute( TILESIZE / 32, TILESIZE / 32, 1 );
 
     // memory barrier
-    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    glMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT );
 
     // check time, wait for query to be ready
     glQueryCounter( queryID[ 1 ], GL_TIMESTAMP );
@@ -62,17 +62,18 @@ void engine::pathtrace() {
       glGetQueryObjectiv( queryID[ 1 ], GL_QUERY_RESULT_AVAILABLE, &checkTimeAvailable );
     glGetQueryObjectui64v( queryID[ 1 ], GL_QUERY_RESULT, &checkTime );
 
-    // break if duration exceeds 16 ms
-    looptime = ( checkTime - startTime ) / 1000000.;
+    // break if duration exceeds 16 ms - query units are nanoseconds
+    looptime = ( checkTime - startTime ) / 1e6; // get milliseconds
     if( looptime > 16. ) break;
   }
-
-  cout << "did " << iterations << " iterations in " << looptime << " ms, for an average of " << looptime/iterations << " ms" << endl;
+  cout << "did " << tilesCompleted << " iterations in " << looptime << " ms, for an average of " << looptime / tilesCompleted << " ms" << endl;
 }
 
 void engine::postprocess() {
-  glUseProgram( postprocessShader );
   // tonemapping and dithering, as configured in the GUI
+  glUseProgram( postprocessShader );
+  glDispatchCompute( std::ceil( WIDTH / 32. ), std::ceil( HEIGHT / 32. ), 1 );
+  glMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ); // sync
 }
 
 void engine::mainDisplayBlit() {
@@ -136,8 +137,8 @@ glm::ivec2 engine::getTile() {
 
   if ( firstTime ) { // construct the tile list
     firstTime = false;
-    for( int x = 0; x < WIDTH; x+= TILESIZE ) {
-      for( int y = 0; y < HEIGHT; y+= TILESIZE ) {
+    for( int x = 0; x <= WIDTH; x += TILESIZE ) {
+      for( int y = 0; y <= HEIGHT; y += TILESIZE ) {
         offsets.push_back( glm::ivec2( x, y ) );
       }
     }
