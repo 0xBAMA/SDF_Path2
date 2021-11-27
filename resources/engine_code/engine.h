@@ -23,7 +23,7 @@ private:
   bool quitConfirm = false;
   bool pQuit       = false;
   bool filter      = false;
-  renderMode mode  = renderMode::preview;
+  renderMode mode  = renderMode::pathtrace;
 
   // initialization
   void init();

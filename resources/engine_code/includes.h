@@ -83,4 +83,7 @@ using json = nlohmann::json;
 #define WIDTH 640
 #define HEIGHT 480
 
+// not sure about this, going to need to do some testing, to maximize amount of work per timer query
+#define TILESIZE 128
+
 #endif

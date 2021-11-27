@@ -23,20 +23,51 @@ void engine::render() {
 
 void engine::raymarch() {
   glUseProgram( raymarchShader );
-  // fullscreen pass
+  // do a fullscreen pass with simple shading
 }
 
 void engine::pathtrace() {
   glUseProgram( pathtraceShader );
 
-  // now I can just call getTile() to get an offset, whenever I need it
-    // abstracting this out makes this function's implementation much cleaner
+  GLuint64 startTime, checkTime;
+  GLuint queryID[ 2 ];
+  glGenQueries( 2, queryID );
+  glQueryCounter( queryID[ 0 ], GL_TIMESTAMP );
 
-  // get an initial time - this has to be done with gl timer queries, not std::chrono
-  // loop
-    // get a glm::ivec2
-    // render the specified tile
-    // check time, break if duration exceeds some specified timing
+  // get startTime
+  GLint startTimeAvailable = 0;
+  while( !startTimeAvailable )
+    glGetQueryObjectiv( queryID[ 0 ], GL_QUERY_RESULT_AVAILABLE, &startTimeAvailable );
+  glGetQueryObjectui64v( queryID[ 0 ], GL_QUERY_RESULT, &startTime );
+
+  int iterations = 0;
+  float looptime = 0.;
+
+  while( 1 ){
+    iterations++;
+
+    // get a tile offset
+    glm::ivec2 tile = getTile();
+
+    // render the specified tile - send uniforms and dispatch
+    glDispatchCompute(TILESIZE / 32, TILESIZE / 32, 1);
+
+    // memory barrier
+    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+    // check time, wait for query to be ready
+    glQueryCounter( queryID[ 1 ], GL_TIMESTAMP );
+    GLint checkTimeAvailable = 0;
+    while( !checkTimeAvailable )
+      glGetQueryObjectiv( queryID[ 1 ], GL_QUERY_RESULT_AVAILABLE, &checkTimeAvailable );
+    glGetQueryObjectui64v( queryID[ 1 ], GL_QUERY_RESULT, &checkTime );
+
+    // break if duration exceeds 16 ms
+    looptime = ( checkTime - startTime ) / 1000000.;
+    if( looptime > 16. ) break;
+  }
+
+  cout << "did " << iterations << " iterations in " << looptime << " ms, for an average of " << looptime/iterations << " ms" << endl;
 }
 
 void engine::postprocess() {
@@ -105,17 +136,16 @@ glm::ivec2 engine::getTile() {
 
   if ( firstTime ) { // construct the tile list
     firstTime = false;
-    for( int x = 0; x < WIDTH; x+= 32 ) {
-      for( int y = 0; y < HEIGHT; y+= 32 ) {
+    for( int x = 0; x < WIDTH; x+= TILESIZE ) {
+      for( int y = 0; y < HEIGHT; y+= TILESIZE ) {
         offsets.push_back( glm::ivec2( x, y ) );
       }
     }
-  } else {
+  } else { // check if the offset needs to be reset
     if ( ++listOffset == int( offsets.size() ) ) {
       listOffset = 0;
     }
   }
-
   // shuffle when listOffset is zero ( first iteration, and any subsequent resets )
   if ( !listOffset ) std::shuffle( offsets.begin(), offsets.end(), rngen );
   return offsets[ listOffset ];
