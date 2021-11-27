@@ -3,9 +3,7 @@
 
 #include "includes.h"
 
-enum class renderMode {
-  none, preview, pathtrace
-};
+enum class renderMode { none, preview, pathtrace };
 
 class engine {
 public:
@@ -47,10 +45,11 @@ private:
   void quitConf( bool *open );
 
   // rendering functions
-  void render();      // wrapper
-  void raymarch();    // preview render
-  void pathtrace();   // accumulate samples
-  void postprocess(); // tonemap, dither
+  void render();        // wrapper
+  void raymarch();      // preview render
+  void pathtrace();     // accumulate samples
+  void postprocess();   // tonemap, dither
+  glm::ivec2 getTile(); // tile renderer offset
 
   // shutdown procedure
   void imguiQuit();
@@ -60,6 +59,7 @@ private:
   // OpenGL data handles
     // render
   GLuint accumulatorTexture;
+  GLuint blueNoiseTexture;
   GLuint raymarchShader;
   GLuint pathtraceShader;
   GLuint postprocessShader;

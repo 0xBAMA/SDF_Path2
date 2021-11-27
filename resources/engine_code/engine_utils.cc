@@ -14,7 +14,7 @@ bool engine::mainLoop() {
 
 void engine::render() {
   // different rendering modes - preview until pathtrace is triggered
-  switch( mode ) {
+  switch ( mode ) {
     case renderMode::preview:   raymarch();  break;
     case renderMode::pathtrace: pathtrace(); break;
     default: break;
@@ -22,17 +22,25 @@ void engine::render() {
 }
 
 void engine::raymarch() {
-  // glUseProgram( raymarchShader );
+  glUseProgram( raymarchShader );
   // fullscreen pass
 }
 
 void engine::pathtrace() {
-  // glUseProgram( pathtraceShader );
-  // tiles, until the frame time limit has passed
+  glUseProgram( pathtraceShader );
+
+  // now I can just call getTile() to get an offset, whenever I need it
+    // abstracting this out makes this function's implementation much cleaner
+
+  // get an initial time - this has to be done with gl timer queries, not std::chrono
+  // loop
+    // get a glm::ivec2
+    // render the specified tile
+    // check time, break if duration exceeds some specified timing
 }
 
 void engine::postprocess() {
-  // glUseProgram( postprocessShader );
+  glUseProgram( postprocessShader );
   // tonemapping and dithering, as configured in the GUI
 }
 
@@ -86,6 +94,31 @@ void engine::handleEvents() {
     if ( event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE && SDL_GetModState() & KMOD_SHIFT )
       pQuit = true; // force quit on shift+esc ( bypasses confirm window )
   }
+}
+
+glm::ivec2 engine::getTile() {
+  static std::vector< glm::ivec2 > offsets;
+  static int listOffset = 0;
+  static bool firstTime = true;
+  std::random_device rd;
+  std::mt19937 rngen( rd() );
+
+  if ( firstTime ) { // construct the tile list
+    firstTime = false;
+    for( int x = 0; x < WIDTH; x+= 32 ) {
+      for( int y = 0; y < HEIGHT; y+= 32 ) {
+        offsets.push_back( glm::ivec2( x, y ) );
+      }
+    }
+  } else {
+    if ( ++listOffset == int( offsets.size() ) ) {
+      listOffset = 0;
+    }
+  }
+
+  // shuffle when listOffset is zero ( first iteration, and any subsequent resets )
+  if ( !listOffset ) std::shuffle( offsets.begin(), offsets.end(), rngen );
+  return offsets[ listOffset ];
 }
 
 void engine::screenShot() {

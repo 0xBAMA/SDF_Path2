@@ -16,7 +16,7 @@ void engine::quitConf( bool *open ) {
     if ( ImGui::Button( " Cancel " ) )
       *open = false;
     ImGui::SameLine();
-    ImGui::Text("      ");
+    ImGui::Text( "      " );
     ImGui::SameLine();
     // button to quit -> set pquit to true
     if ( ImGui::Button( " Quit " ) )
