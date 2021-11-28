@@ -1,14 +1,19 @@
 #include "engine.h"
 
 bool engine::mainLoop() {
-  render();                    // render with the current mode
-  postprocess();               // accumulatorTexture -> displayTexture
-  mainDisplayBlit();           // fullscreen triangle copying the image
-  imguiPass();                 // do all the GUI stuff
-  SDL_GL_SwapWindow( window ); // swap the double buffers to present
-  handleEvents();              // handle input events
+  // renderer config
+  static coreParameters core;
+  static lensParameters lens;
+  static postParameters post;
 
-  return !pQuit;               // break loop in main.cc when pQuit turns true
+  render();                     // render with the current mode
+  postprocess();                // accumulatorTexture -> displayTexture
+  mainDisplayBlit();            // fullscreen triangle copying the image
+  imguiPass();                  // do all the GUI stuff
+  SDL_GL_SwapWindow( window );  // swap the double buffers to present
+  handleEvents();               // handle input events
+
+  return !pQuit;                // break loop in main.cc when pQuit turns true
 }
 
 
@@ -42,18 +47,15 @@ void engine::pathtrace() {
 
   int tilesCompleted = 0;
   float looptime = 0.;
-  while( 1 ){
-    tilesCompleted++;
-
+  while( 1 ) {
     // get a tile offset + send it
     glm::ivec2 tile = getTile();
-    glUniform2i( glGetUniformLocation( pathtraceShader, "tileOffset" ), tile.x, tile.y);
+    glUniform2i( glGetUniformLocation( pathtraceShader, "tileOffset" ), tile.x, tile.y );
 
     // render the specified tile - send uniforms and dispatch
     glDispatchCompute( TILESIZE / 32, TILESIZE / 32, 1 );
-
-    // memory barrier
     glMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT );
+    tilesCompleted++;
 
     // check time, wait for query to be ready
     glQueryCounter( queryID[ 1 ], GL_TIMESTAMP );
@@ -64,9 +66,11 @@ void engine::pathtrace() {
 
     // break if duration exceeds 16 ms - query units are nanoseconds
     looptime = ( checkTime - startTime ) / 1e6; // get milliseconds
-    if( looptime > 16. ) break;
+    if( looptime > 16. ) {
+      cout << tilesCompleted << " tiles in " << looptime << " ms, avg " << looptime / tilesCompleted << " ms/tile" << endl;
+      break;
+    }
   }
-  cout << "did " << tilesCompleted << " iterations in " << looptime << " ms, for an average of " << looptime / tilesCompleted << " ms" << endl;
 }
 
 void engine::postprocess() {

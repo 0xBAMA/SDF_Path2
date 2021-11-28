@@ -82,10 +82,10 @@ void engine::displaySetup() {
   // is still cheaper, since there is no divergence there. Long story short, good for
   // a small speedup and it is Good Practice.
 
-  glm::vec3 points[] = {
-    glm::vec3(-1, -1, 0.5), // A
-    glm::vec3( 3, -1, 0.5), // B
-    glm::vec3(-1,  3, 0.5)  // C
+  glm::vec3 points[ ] = {
+    glm::vec3( -1, -1, 0.5 ), // A
+    glm::vec3(  3, -1, 0.5 ), // B
+    glm::vec3( -1,  3, 0.5 )  // C
   };
 
   // VAO, VBO
@@ -136,13 +136,12 @@ void engine::displaySetup() {
   glGenTextures( 1, &accumulatorTexture );
   glActiveTexture( GL_TEXTURE0 + 1 );
   glBindTexture( GL_TEXTURE_2D, accumulatorTexture );
-  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA32F, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
+  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA32F, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, &imageData[ 0 ] );
   glBindImageTexture( 1, accumulatorTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F );
 
   // blue noise texture
   unsigned lWidth, lHeight, lError;
   std::vector< unsigned char > lImage;
-  // lError = lodepng::decode( lImage, lWidth, lHeight, "resources/blueNoise.png", LodePNGColorType::LCT_RGBA, 8 );
   lError = lodepng::decode( lImage, lWidth, lHeight, "resources/blueNoise.png" );
   if( lError )
     cout << "Blue noise - decoder error " << lError << ": " << lodepng_error_text( lError ) << endl;

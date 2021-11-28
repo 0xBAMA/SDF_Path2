@@ -83,10 +83,52 @@ using json = nlohmann::json;
 // #define WIDTH 640
 // #define HEIGHT 480
 
-#define WIDTH  1920/4
-#define HEIGHT 1080/4
+#define WIDTH  1920
+#define HEIGHT 1080
 
 // not sure about this, going to need to do some testing, to maximize amount of work per timer query
 #define TILESIZE 128
+
+
+struct coreParameters {
+  glm::ivec2 tileOffset;
+  glm::ivec2 noiseOffset; // update once a frame, offset blue noise read
+  int maxSteps = 300;
+  int maxBounces = 10;
+  float maxDistance = 5.;
+  float epsilon = 0.001;
+  float exposure = 1.0;
+  int normalMethod = 0;
+  float FoV = 0.152;
+  glm::vec3 basicDiffuse;
+  glm::vec3 viewerPosition;
+  float rotationAboutX = 0.;
+  float rotationAboutY = 0.;
+  float rotationAboutZ = 0.;
+  // calculated from the above 3 params
+  glm::vec3 basisX;
+  glm::vec3 basisY;
+  glm::vec3 basisZ;
+};
+
+struct lensParameters {
+  float lensScaleFactor;
+  float lensRadius1;
+  float lensRadius2;
+  float lensThickness;
+  float lensRotate;
+  float lensIOR;
+};
+
+struct postParameters {
+  int ditherMode;
+  int ditherMethod;
+  int ditherPattern;
+  int tonemapMode;
+};
+
+
+
+
 
 #endif
