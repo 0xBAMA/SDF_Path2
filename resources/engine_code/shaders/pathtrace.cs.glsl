@@ -17,6 +17,7 @@ uniform int   maxBounces;       // number of pathtrace bounces
 uniform float maxDistance;      // maximum ray travel
 uniform float epsilon;          // how close is considered a surface hit
 uniform int   normalMethod;     // selector for normal computation method
+uniform float focusDistance;    // for thin lens approx
 uniform float FoV;              // field of view
 uniform float exposure;         // exposure adjustment
 uniform vec3  viewerPosition;   // position of the viewer
@@ -76,6 +77,8 @@ vec3 randomUnitVector() {
 vec3 randomInUnitDisk() {
   return vec3( randomUnitVector().xy, 0. );
 }
+
+
 
 
 
@@ -141,6 +144,9 @@ vec3 norm( vec3 p ) {
   }
 }
 
+
+
+
 vec3 colorSample( vec3 ro, vec3 rd ) {
   // loop to max bounces
   return vec3( 0. );
@@ -175,7 +181,7 @@ vec3 pathtraceSample( ivec2 location ) {
       // get depth and normals - think about special handling for refractive hits
 
       // get the result for a ray
-      cResult += colorSample( ro, rd );
+      // cResult += colorSample( ro, rd );
     }
   }
   float normalizeTerm = float( AA * AA );

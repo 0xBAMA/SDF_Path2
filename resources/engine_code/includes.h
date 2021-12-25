@@ -98,6 +98,7 @@ struct coreParameters {
   float maxDistance = 5.;
   float epsilon = 0.001;
   float exposure = 1.0;
+  float focusDistance;
   int normalMethod = 0;
   float FoV = 0.152;
   glm::vec3 basicDiffuse;
@@ -125,6 +126,8 @@ struct postParameters {
   int ditherMethod;
   int ditherPattern;
   int tonemapMode;
+  int depthMode;
+  float depthScale;
 };
 
 
