@@ -88,7 +88,6 @@ void engine::mainDisplayBlit() {
   // texture display
   glUseProgram( displayShader );
   glBindVertexArray( displayVAO );
-  glBindBuffer( GL_ARRAY_BUFFER, displayVBO );
 
   ImGuiIO &io = ImGui::GetIO();
   glUniform2f( glGetUniformLocation( displayShader, "resolution" ), io.DisplaySize.x, io.DisplaySize.y );

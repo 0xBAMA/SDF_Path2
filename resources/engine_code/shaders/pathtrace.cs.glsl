@@ -4,7 +4,7 @@ layout( local_size_x = 32, local_size_y = 32, local_size_z = 1 ) in;
 layout( binding = 1, rgba32f ) uniform image2D accumulator;
 // add another texture to hold normals in R, G, B and depth in A
 
-layout( binding = 2, rgba8ui ) uniform uimage2D blueNoise;
+layout( binding = 3, rgba8ui ) uniform uimage2D blueNoise;
 
 #define PI 3.1415926535897932384626433832795
 #define AA 2 // each sample is actually 2^2 = 4 offset samples
